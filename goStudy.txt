@@ -1,0 +1,45 @@
+1、Linux系统下的环境变量：
+使用export查看，PATH中需要包含go程序的文件路径；GOPATH为当前Go的工作路径；GOROOT为Go的程序包路径
+
+2、定义全局常量数组 or 切片：
+var maskbit = []byte{0x00, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe, 0xff}
+
+3、定义常量：
+const (
+    PtreeIPv4 = 1
+    PtreeIPv6 = 2
+)
+
+4、使用多返回值函数：
+func (t *Ptree) PrintIPv4(f func(interface{})) (totalNode, totalInfo uint32) {
+    var node *PtreeNode
+    var nodeNum, infoNum uint32
+    for node = t.GetRoot(); node != nil; node = node.PtreeNodeNext() {
+        infoNum += node.ptreeNodePrintIPv4(f)
+        nodeNum++
+    }
+    fmt.Printf("TotalNode:%d,TotalInfo:%d\n", nodeNum, infoNum)
+    return nodeNum, infoNum
+}
+
+
+5、使用GDB调试：
+go build -gcflags "-N -l"
+
+6、使用interface{}类型的强转：
+func (t *Ptree) PrintIPv4(f func(interface{})) (totalNode, totalInfo uint32) {
+    var node *PtreeNode
+    var nodeNum, infoNum uint32
+    for node = t.GetRoot(); node != nil; node = node.PtreeNodeNext() {
+        infoNum += node.ptreeNodePrintIPv4(f)
+        nodeNum++
+    }
+    fmt.Printf("TotalNode:%d,TotalInfo:%d\n", nodeNum, infoNum)
+    return nodeNum, infoNum
+}
+func printPrefix(info interface{}) {
+    prefix := info.([]byte)
+    fmt.Println(prefix)
+}
+nodeNum, infoNum := table.PrintIPv4(printPrefix)
+
